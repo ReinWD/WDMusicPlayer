@@ -9,4 +9,5 @@ public class Values {
 
     public static final String KEY_NAME_TAG = "flieName";
     public static final String KEY_URL_TAG = "url";
+    public static final String TOOLBAR_TITLE_MAIN = "Music Player";
 }
