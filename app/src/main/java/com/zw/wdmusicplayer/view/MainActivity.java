@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,9 +13,12 @@ import android.widget.Toast;
 
 import com.zw.wdmusicplayer.R;
 import com.zw.wdmusicplayer.Values;
+import com.zw.wdmusicplayer.controler.MainControler;
 import com.zw.wdmusicplayer.view.adapter.MainRecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity{
+    private static final String TAG = "MainActivity";
+
     Context mContext = this;
 
     private ImageView mPlay;
@@ -25,6 +29,7 @@ public class MainActivity extends AppCompatActivity{
     private Toolbar mToolBar;
     private RecyclerView mSongList;
     private MainRecyclerAdapter mMainRecyclerAdapter;
+    private MainControler mMainControler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,9 @@ public class MainActivity extends AppCompatActivity{
 
         initView();
         registerListener();
+        mMainControler = new MainControler(this);
+        mMainControler.requestList(Values.LIST_HOT);
+        Log.i(TAG, "onCreate: finished");
     }
 
     private void initView(){
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void registerListener(){
-
+        //TODO:change logic below
         mCurrentSongInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

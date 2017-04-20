@@ -11,8 +11,8 @@ import java.io.InputStream;
 public interface OnRequestFinishedListener {
     /**
      *
-     * @param resultStream result from your
+     * @param resultStream result from your request
      */
     @Nullable
-    void onResult(InputStream resultStream, int... index);
+    void onResult(InputStream resultStream);
 }

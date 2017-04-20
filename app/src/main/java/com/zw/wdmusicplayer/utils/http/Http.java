@@ -32,7 +32,7 @@ public class Http {
 
     private final String TAG = "Http";
 
-    public Http(OnRequestFinishedListener listener, int ... index ){
+    public Http(OnRequestFinishedListener listener){
         this.mListener = listener;
     this.index = index;}
 
@@ -40,9 +40,13 @@ public class Http {
     private int [] index;
     private OkHttpClient httpClient;
 
-    public void requestData(String url,String[][] header){
+    public void requestData(String url){
+        this.requestData(url,null);
+    }
+
+    public void requestData(String url,Map<String,String>headers){
         if (httpClient == null){
-            buildClint();
+            httpClient =new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
         }
         Request request = new Request.Builder()
                 .get()
@@ -50,26 +54,22 @@ public class Http {
                 .addHeader("showapi_sign",toMD5("698d51a19d8a121ce581499d7b701668"))
                 .addHeader("showapi_res_gzip","0")
                 .url(url).build();
-        if (header != null) {
-            request = this.addMoreHeader(request,header);
+        if (headers != null) {
+            request = this.addMoreHeader(request,headers);
         }
         Call call = httpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                mListener.onResult(null,index);
+                mListener.onResult(null);
                 Log.e(TAG, "on requestData():",e );
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                mListener.onResult(response.body().byteStream(),index);
+                mListener.onResult(response.body().byteStream());
             }
         });
-    }
-
-    public void requestData(String url){
-        this.requestData(url,null);
     }
 
     @Nullable
@@ -93,16 +93,13 @@ public class Http {
         }
     }
 
-    private Request addMoreHeader(Request requests,String [][] headers){
+    private Request addMoreHeader(Request requests,Map<String,String>headers){
             Request.Builder builder = requests.newBuilder();
-            for (int i = 0; i < headers.length; i++) {
-                builder.addHeader(headers[i][0],headers[i][1]);
-            }
+        for (Map.Entry<String, String>header:
+                headers.entrySet()){
+            builder.addHeader(header.getKey(),header.getValue());
+        }
             return builder.build();
-    }
-
-    private void buildClint(){
-        httpClient =new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
     }
 
 }
