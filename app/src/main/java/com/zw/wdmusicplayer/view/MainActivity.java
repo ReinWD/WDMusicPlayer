@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
 
     public void refreshList(JsonBean list){
         mMainRecyclerAdapter.setData(list);
+        mSongList.smoothScrollToPosition(0);
     }
 
     @Override
@@ -58,6 +59,13 @@ public class MainActivity extends AppCompatActivity{
     private void initView(){
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         mToolBar.setTitle(Values.TOOLBAR_TITLE_MAIN);
+        mToolBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMainControler.refresh();
+                mSongList.smoothScrollToPosition(0);
+            }
+        });
         setSupportActionBar(mToolBar);
 
         mSongList = (RecyclerView) findViewById(R.id.recycler_songlist_main);

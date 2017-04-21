@@ -43,6 +43,7 @@ public class MainControler extends BaseControler<MainActivity> {
     public void requestList(int listID) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put(Values.LIST_PARAM, String.valueOf(listID));
+        currentList = listID;
         this.sendRequest(Values.API, headers);
     }
 
@@ -64,6 +65,14 @@ public class MainControler extends BaseControler<MainActivity> {
 
     }
 
+    public void refresh(){
+        this.requestList(currentList);
+    }
+
+    public int getCurrentList() {
+        return currentList;
+    }
+
     private void sendRequest(String target, Map<String, String> headers) {
         if (mHttpClient == null) {
             mHttpClient = new Http(new onListReturnListener());
@@ -78,7 +87,7 @@ public class MainControler extends BaseControler<MainActivity> {
         getContext().bindService(intent, mConnector, getContext().BIND_AUTO_CREATE);
     }
 
-    protected void refreshList(final JsonBean list) {
+    void refreshList(final JsonBean list) {
         getContext().runOnUiThread(new Runnable() {
             @Override
             public void run() {
