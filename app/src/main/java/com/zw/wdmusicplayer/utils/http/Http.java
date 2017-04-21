@@ -34,7 +34,7 @@ public class Http {
 
     public Http(OnRequestFinishedListener listener){
         this.mListener = listener;
-    this.index = index;}
+        this.index = index;}
 
     private OnRequestFinishedListener mListener;
     private int [] index;
@@ -44,19 +44,27 @@ public class Http {
         this.requestData(url,null);
     }
 
-    public void requestData(String url,Map<String,String>headers){
+    public void requestData(String url,Map<String,String>params){
         if (httpClient == null){
             httpClient =new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
         }
+        if (params != null) {
+            StringBuilder builder = new StringBuilder(url);
+            builder.append("?");
+            params.put("showapi_appid",	"35673");
+            params.put("showapi_sign","B08390513B32C586255197A9AB1A62F7");
+            params.put("showapi_res_gzip","0");
+            for (Map.Entry<String ,String >entry:
+                 params.entrySet()) {
+                builder.append(entry.getKey()+"="+entry.getValue()).append("&");
+            }
+            builder.delete(builder.length(),builder.length());
+            url = builder.toString();
+        }
         Request request = new Request.Builder()
                 .get()
-                .addHeader("showapi_appid",	"35673")
-                .addHeader("showapi_sign",toMD5("698d51a19d8a121ce581499d7b701668"))
-                .addHeader("showapi_res_gzip","0")
                 .url(url).build();
-        if (headers != null) {
-            request = this.addMoreHeader(request,headers);
-        }
+
         Call call = httpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -91,15 +99,6 @@ public class Http {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private Request addMoreHeader(Request requests,Map<String,String>headers){
-            Request.Builder builder = requests.newBuilder();
-        for (Map.Entry<String, String>header:
-                headers.entrySet()){
-            builder.addHeader(header.getKey(),header.getValue());
-        }
-            return builder.build();
     }
 
 }
